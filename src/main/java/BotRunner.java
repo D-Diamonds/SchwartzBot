@@ -27,6 +27,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author jlandsman3
+ */
+
 public class BotRunner {
     private static final String APPLICATION_NAME = "Schwartz Bot";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
