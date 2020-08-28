@@ -60,8 +60,7 @@ public class Email {
     }
 
     public void sendMessage() throws MessagingException, IOException {
-        Message message = createMessageWithEmail(createEmail());
-        message = service.users().messages().send(ID, message).execute();
+        Message message = service.users().messages().send(ID, createMessageWithEmail(createEmail())).execute();
 
         System.out.println("Message id: " + message.getId());
         System.out.println(message.toPrettyString());

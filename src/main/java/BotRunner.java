@@ -32,9 +32,11 @@ public class BotRunner {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
-    // Email address sheet
+    // Sheet IDs
     private static final String EMAIL_SHEET_ID = "1CX67KDVUOI1Ane-cxg_W8r2JAy4NHFEhMse7PXN0NYs";
     private static final String QUOTE_SHEET_ID = "1Ao40X-Vn2CZxFPvjVL185g9NASRiyxovRh8MCyyJWUU";
+
+    // Sheet ranges
     private static final String EMAIL_RANGE = "signups!C:C";
     private static final String QUOTE_RANGE = "quotes!A:A";
 
@@ -73,6 +75,8 @@ public class BotRunner {
     public static void main(String... args) throws IOException, GeneralSecurityException, MessagingException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+
+        // Initialize services
         Gmail gmailService = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -82,13 +86,16 @@ public class BotRunner {
                 .build();
 
 
+        // Get values
         ValueRange emails = sheetsService.spreadsheets().values()
                 .get(EMAIL_SHEET_ID, EMAIL_RANGE)
                 .execute();
+
         ValueRange quotes = sheetsService.spreadsheets().values()
                 .get(QUOTE_SHEET_ID, QUOTE_RANGE)
                 .execute();
 
+        // Get emails
         List<List<Object>> emailsValues = emails.getValues();
 
         Set<InternetAddress> internetAddresses = new HashSet<>();
@@ -110,6 +117,7 @@ public class BotRunner {
             }
         }
 
+        // Get Quotes
         List<List<Object>> quoteValues  = quotes.getValues();
 
         List<String> quoteList = new ArrayList<>();
@@ -124,8 +132,9 @@ public class BotRunner {
             }
         }
 
-        Email test = new Email(gmailService, internetAddresses, quoteList.get((int) (Math.random() * quoteList.size())));
+        // Create and send email
+        Email email = new Email(gmailService, internetAddresses, quoteList.get((int) (Math.random() * quoteList.size())));
 
-        test.sendMessage();
+        email.sendMessage();
     }
 }
